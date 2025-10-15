@@ -1,0 +1,32 @@
+# config_vit_light_fixed.yaml
+seed: 2025
+
+data:
+  csv_path: "./complete_merged_data_ready_for_training.csv"
+  image_root: "."               # CSV paths are relative to CWD (adjust as needed)
+  img_size: 224
+  label_cols: ["Marbling", "Meat Color", "Texture", "Surface Moisture", "Total"]
+  path_cols: ["file_path_430nm", "file_path_540nm", "file_path_580nm"]  # 수정: nm 추가
+  require_all_paths: true
+
+split:
+  use_split_column: false
+  group_col: "이력번호"         # 수정: 샘플번호 → 이력번호 (더 안정적인 그룹핑)
+  test_ratio: 0.2
+  val_ratio: 0.2
+
+model:
+  backbone: "deit_tiny_patch16_224"
+
+train:
+  out_dir: "./runs_vit_light"
+  epochs: 40
+  batch_size: 8
+  lr: 3.0e-4
+  weight_decay: 1.0e-4
+  workers: 2
+  partial_ft: false
+  huber_beta: 0.5
+
+export:
+  dump_test_embeddings: true

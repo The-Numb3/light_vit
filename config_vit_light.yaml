@@ -1,0 +1,33 @@
+
+# config_vit_light.yaml
+seed: 2025
+
+data:
+  csv_path: "./merged_all_data_with_correct_file_paths.csv"  # update if path differs
+  image_root: "."               # CSV paths are relative to CWD (adjust as needed)
+  img_size: 224
+  label_cols: ["Marbling", "Meat Color", "Texture", "Surface Moisture", "Total"]
+  path_cols: ["file_path_430", "file_path_540", "file_path_580"]
+  require_all_paths: true
+
+split:
+  use_split_column: false
+  group_col: "샘플번호"         # or "group_id" if present
+  test_ratio: 0.2
+  val_ratio: 0.2
+
+model:
+  backbone: "deit_tiny_patch16_224"
+
+train:
+  out_dir: "./runs_vit_light"
+  epochs: 40
+  batch_size: 8
+  lr: 3.0e-4
+  weight_decay: 1.0e-4
+  workers: 2
+  partial_ft: false
+  huber_beta: 0.5
+
+export:
+  dump_test_embeddings: true
