@@ -1,0 +1,47 @@
+{
+  "embedding_source": "./runs_vit_light/test_embeddings.parquet",
+  "feature_dim": 192,
+  "n_samples": 32,
+  "n_groups": 1,
+  "xgb_params": {
+    "objective": "reg:squarederror",
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "random_state": 2025,
+    "n_estimators": 100
+  },
+  "results": {
+    "Marbling": {
+      "avg_rmse": 0.052573760279761496,
+      "std_rmse": 0.08883179648450781,
+      "avg_r2": 0.9740101470189051,
+      "std_r2": 0.051761663531199986
+    },
+    "Meat Color": {
+      "avg_rmse": 0.9889739298026289,
+      "std_rmse": 0.1152684254983396,
+      "avg_r2": -1.4777533954732829,
+      "std_r2": 0.6199823715132232
+    },
+    "Texture": {
+      "avg_rmse": 0.9135407321011566,
+      "std_rmse": 0.1386330022483069,
+      "avg_r2": -1.7067482144751498,
+      "std_r2": 1.9998591294061236
+    },
+    "Surface Moisture": {
+      "avg_rmse": 1.1427859921056218,
+      "std_rmse": 0.16417196457838573,
+      "avg_r2": -3.175430991343126,
+      "std_r2": 1.6113240781163392
+    },
+    "Total": {
+      "avg_rmse": 1.0041586625522267,
+      "std_rmse": 0.15857453832555746,
+      "avg_r2": -1.3036089989546873,
+      "std_r2": 1.1778798844922387
+    }
+  }
+}

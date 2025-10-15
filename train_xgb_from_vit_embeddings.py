@@ -45,7 +45,6 @@ def train_xgboost_single_target(X: np.ndarray, y: np.ndarray,
     if xgb_params is None:
         xgb_params = {
             'objective': 'reg:squarederror',
-            'eval_metric': 'rmse',
             'max_depth': 6,
             'learning_rate': 0.1,
             'subsample': 0.8,
@@ -56,9 +55,20 @@ def train_xgboost_single_target(X: np.ndarray, y: np.ndarray,
     
     # K-Fold 설정
     if groups is not None:
-        # 그룹 기반 CV (같은 이력번호는 같은 fold)
-        kf = GroupKFold(n_splits=5)
-        splits = list(kf.split(X, y, groups))
+        # 그룹 수 확인
+        unique_groups = len(np.unique(groups))
+        n_splits = min(5, unique_groups)
+        
+        if unique_groups >= 2:
+            # 그룹 기반 CV (같은 이력번호는 같은 fold)
+            kf = GroupKFold(n_splits=n_splits)
+            splits = list(kf.split(X, y, groups))
+            print(f"     GroupKFold 사용: {n_splits}개 fold, {unique_groups}개 그룹")
+        else:
+            # 그룹이 1개뿐이면 일반 K-Fold 사용
+            print(f"     그룹이 {unique_groups}개뿐이므로 일반 K-Fold 사용")
+            kf = KFold(n_splits=5, shuffle=True, random_state=2025)
+            splits = list(kf.split(X, y))
     else:
         # 일반 K-Fold
         kf = KFold(n_splits=5, shuffle=True, random_state=2025)
@@ -74,8 +84,7 @@ def train_xgboost_single_target(X: np.ndarray, y: np.ndarray,
         # XGBoost 학습
         model = xgb.XGBRegressor(**xgb_params)
         model.fit(X_train, y_train, 
-                 eval_set=[(X_val, y_val)], 
-                 early_stopping_rounds=20,
+                 eval_set=[(X_val, y_val)],
                  verbose=False)
         
         # 예측 및 평가
@@ -130,14 +139,12 @@ def train_xgboost_multi_target(embedding_path: str, output_dir: str = "./xgb_res
     # 3. XGBoost 하이퍼파라미터
     xgb_params = {
         'objective': 'reg:squarederror',
-        'eval_metric': 'rmse',
         'max_depth': 6,
         'learning_rate': 0.1,
         'subsample': 0.8,
         'colsample_bytree': 0.8,
         'random_state': 2025,
-        'n_estimators': 200,
-        'early_stopping_rounds': 30
+        'n_estimators': 100
     }
     
     # 4. 각 타겟별로 학습
